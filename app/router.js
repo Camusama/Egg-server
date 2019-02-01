@@ -7,7 +7,7 @@
 module.exports = app => {
   const { router, controller } = app;
   // const report = app.middleware.report({});
-  router.get('/', controller.home.index);
-  router.get('/news', controller.news.list);
-  router.resources('users', '/users', controller.users);
+  require('./router/user')(app);
+  require('./router/uploadimg')(app);
+  router.resources('Crops', '/api/crops', controller.crop);
 };

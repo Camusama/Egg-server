@@ -1,0 +1,55 @@
+{% extends "layout.html" %} {% block content %}
+<h2>上传作物</h2>
+
+<ul>
+  <li>作物名称: <input id="name" type="text" /></li>
+  <li>图片描述: <input id="summary" type="text" /></li>
+  <li>选择图片<input id="img" name="file" type="file" /></li>
+  <li><button id="upload">上传图片</button></li>
+  <li><input id="submit" type="submit" value="Upload" /></li>
+</ul>
+
+<script>
+  var imgurl = ''
+  $('#upload').click(function(e) {
+    e.preventDefault()
+    var formData = new FormData()
+    formData.append('image', $('#img')[0].files[0])
+
+    $.ajax({
+      url: '/addCrop',
+      data: formData,
+      method: 'POST',
+      contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+      processData: false, // NEEDED, DON'T OMIT THIS
+      success: function(result) {
+        imgurl = 'localhost:7001/' + result.data
+      },
+      error: function(responseStr) {
+        alert('error', responseStr)
+      }
+    })
+  })
+  $('#submit').click(function(e) {
+    e.preventDefault()
+    var formData = new FormData()
+    formData.append('image', this.imgurl)
+    formData.append('name', $('#name').val())
+    formData.append('summary', $('#summary').val())
+
+    $.ajax({
+      url: '/api/crops',
+      data: formData,
+      method: 'POST',
+      contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
+      processData: false, // NEEDED, DON'T OMIT THIS
+      success: function(result) {
+        console.log(result)
+      },
+      error: function(responseStr) {
+        alert('error', responseStr)
+      }
+    })
+  })
+</script>
+{% endblock %}
