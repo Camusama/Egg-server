@@ -3,6 +3,6 @@ module.exports = () => {
     const startTime = Date.now();
     await next();
     // 上报请求时间
-    console.log(Date.now() - startTime);
+    console.log('用时' + (Date.now() - startTime));
   };
 };

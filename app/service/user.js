@@ -25,6 +25,9 @@ class UserService extends Service {
         },
       });
       if (!userDB) {
+        if (!user.authority_id) {
+          user.authority_id === 1;
+        }
         const res = await this.ctx.model.User.create(user);
         ctx.status = 201;
         return Object.assign(SUCCESS, {
@@ -103,24 +106,51 @@ class UserService extends Service {
         const hash = md5.hex(password);
         ctx.cookies.set('token', hash, {
           httpOnly: false,
-          signed: false,
+          // 会导致cookie.get返回undefine
+          // signed: false,
           maxAge: 3600 * 1000,
           path: '/',
         });
         ctx.cookies.set('user_id', user.id, {
           httpOnly: false,
-          signed: false,
+          // signed: false,
           maxAge: 3600 * 1000,
           path: '/',
         });
-        return Object.assign(SUCCESS, {
-          data: Object.assign(user, {
-            password: '',
-          }),
-        });
+        return Object.assign(
+          SUCCESS,
+          {
+            data: Object.assign(user, {
+              password: '',
+            }),
+          },
+          {
+            msg: '登陆成功',
+            token: 'admin', // 前端使用
+          }
+        );
       }
       return Object.assign(ERROR, {
         msg: 'password is error',
+      });
+    } catch (error) {
+      ctx.status = 500;
+      throw error;
+    }
+  }
+  async logout() {
+    const { ctx } = this;
+    try {
+      if (ctx.cookies.get('token')) {
+        ctx.status = 200;
+        ctx.cookies.set('token', null);
+        ctx.cookies.set('user_id', null);
+        return Object.assign(SUCCESS, {
+          msg: '登出成功',
+        });
+      }
+      return Object.assign(ERROR, {
+        msg: '没有登录',
       });
     } catch (error) {
       ctx.status = 500;
@@ -131,23 +161,36 @@ class UserService extends Service {
   async find(id) {
     const { ctx } = this;
     try {
-      const user = await ctx.model.User.findById(id, {
-        include: [
-          {
-            model: ctx.model.Authority,
-            attributes: [ 'id', 'name' ],
-          },
-        ],
-      });
-      if (!user) {
-        ctx.status = 401;
-        return Object.assign(ERROR, {
-          msg: 'user not found',
+      // const user = await ctx.model.User.findById(id, {
+      //   include: [
+      //     {
+      //       model: ctx.model.Authority,
+      //       attributes: [ 'id', 'name' ],
+      //     },
+      //   ],
+      // });
+      const user_id = ctx.cookies.get('user_id');
+      // console.log('cookieid', user_id, ctx.cookies.get('token'));
+      // 避免强转类型
+      // console.log('infoid', id);
+      if (user_id == id.toString()) {
+        // console.log('infoid', id);
+
+        const user = await ctx.model.User.findById(id);
+        if (!user) {
+          ctx.status = 401;
+          return Object.assign(ERROR, {
+            msg: 'user not found',
+          });
+        }
+        ctx.status = 200;
+        return Object.assign(SUCCESS, {
+          msg: '请求成功',
+          data: user,
         });
       }
-      ctx.status = 200;
-      return Object.assign(SUCCESS, {
-        data: user,
+      return Object.assign(ERROR, {
+        msg: '请求失败',
       });
     } catch (error) {
       throw 500;

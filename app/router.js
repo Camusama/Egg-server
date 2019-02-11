@@ -10,4 +10,6 @@ module.exports = app => {
   require('./router/user')(app);
   require('./router/uploadimg')(app);
   router.resources('Crops', '/api/crops', controller.crop);
+  router.get('/test/add', controller.test.add);
+  router.get('/test/remove', controller.test.remove);
 };

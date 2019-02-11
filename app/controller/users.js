@@ -38,15 +38,23 @@ class UserController extends Controller {
   async login() {
     const { ctx } = this;
     const { username, password } = ctx.request.body;
+    // const { username, password } = ctx.query;
     ctx.body = await ctx.service.user.login({
       username,
       password,
     });
   }
+  async logout() {
+    const { ctx } = this;
+
+    // const { username, password } = ctx.request.body;
+    ctx.body = await ctx.service.user.logout();
+  }
 
   async find() {
     const { ctx } = this;
-    const id = +ctx.params.id;
+
+    const id = ctx.params.id;
     ctx.body = await ctx.service.user.find(id);
   }
 }
