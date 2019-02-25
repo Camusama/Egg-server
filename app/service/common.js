@@ -8,7 +8,7 @@ class UserService extends Service {
     const { ctx } = this;
     try {
       const crop = await ctx.model.Crop.findAll({
-        attributes: [ 'name' ],
+        attributes: ['id', 'name' ],
       });
       if (!crop) {
         return Object.assign(ERROR, {

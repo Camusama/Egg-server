@@ -12,7 +12,7 @@ module.exports = app => {
           max: 50,
         },
       },
-      corpname: {
+      cropname: {
         type: STRING,
       },
       feature: {

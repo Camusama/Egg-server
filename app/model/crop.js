@@ -31,6 +31,9 @@ module.exports = app => {
 
   Crop.associate = function() {
     app.model.Crop.hasMany(app.model.CropRel.Seed);
+    app.model.Crop.hasMany(app.model.CropRel.Grow);
+    app.model.Crop.hasMany(app.model.CropRel.Pest);
+    app.model.Crop.hasMany(app.model.CropRel.Month);
   };
   return Crop;
 };
