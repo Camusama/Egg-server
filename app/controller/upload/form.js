@@ -51,7 +51,7 @@ class UploadFormController extends Controller {
     }
     this.ctx.body = {
       code: 0,
-      data: 'public/upload/' + dirName + '/' + filename,
+      data: '/public/upload/' + dirName + '/' + filename,
       msg: '',
     };
     // 前端使用：服务器地址+文件名

@@ -1,64 +1,42 @@
 'use strict';
-
 const Controller = require('egg').Controller;
-
-function toInt(str) {
+function toInt (str) {
   if (typeof str === 'number') return str;
   if (!str) return str;
   return parseInt(str, 10) || 0;
 }
-
 class CropController extends Controller {
-  async index() {
+  async index () {
     const ctx = this.ctx;
-    const query = {
-      limit: toInt(ctx.query.limit) ? toInt(ctx.query.limit) : 8,
-      offset: toInt((ctx.query.page - 1) * ctx.query.limit)
-        ? toInt((ctx.query.page - 1) * ctx.query.limit)
-        : 0,
-    };
-    ctx.body = await ctx.model.Crop.findAll(query);
+    const { limit, page } = ctx.query;
+    ctx.body = await ctx.service.crop.index(limit, page);
+  }
+  async create () {
+    const { ctx } = this;
+    ctx.body = await ctx.service.crop.create(ctx.request.body);
   }
 
-  async show() {
-    const ctx = this.ctx;
-    ctx.body = await ctx.model.Crop.findById(toInt(ctx.params.id));
+  async destroy () {
+    const { ctx } = this;
+    const id = +ctx.params.id;
+    ctx.body = await ctx.service.crop.del(id);
   }
 
-  async create() {
-    const ctx = this.ctx;
-    const { name, summary, img, tags } = ctx.request.body;
-    const Crop = await ctx.model.Crop.create({ name, summary, img, tags });
-    ctx.status = 201;
-    ctx.body = Crop;
+  async update () {
+    const { ctx } = this;
+    const id = +ctx.params.id;
+    const crop = ctx.request.body;
+    ctx.body = await ctx.service.crop.update({
+      id,
+      crop,
+    });
   }
 
-  async update() {
-    const ctx = this.ctx;
-    const id = toInt(ctx.params.id);
-    const Crop = await ctx.model.Crop.findById(id);
-    if (!Crop) {
-      ctx.status = 404;
-      return;
-    }
+  async find () {
+    const { ctx } = this;
 
-    const { name, summary, img, tags } = ctx.request.body;
-    await Crop.update({ name, summary, img, tags });
-    ctx.body = Crop;
-  }
-
-  async destroy() {
-    const ctx = this.ctx;
-    const id = toInt(ctx.params.id);
-    const Crop = await ctx.model.Crop.findById(id);
-    if (!Crop) {
-      ctx.status = 404;
-      return;
-    }
-
-    await Crop.destroy();
-    ctx.status = 200;
+    const id = ctx.params.id;
+    ctx.body = await ctx.service.crop.find(id);
   }
 }
-
 module.exports = CropController;

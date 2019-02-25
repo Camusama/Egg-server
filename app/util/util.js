@@ -8,6 +8,7 @@ module.exports = {
     code: 0,
     msg: 'success',
   },
+  defaultIMG: '/public/defaultimg.jpg',
   unique(arr) {
     return arr.filter(function(item, index, arr) {
       return arr.indexOf(item) === index;

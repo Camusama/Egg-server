@@ -9,7 +9,13 @@ module.exports = app => {
   // const report = app.middleware.report({});
   require('./router/user')(app);
   require('./router/uploadimg')(app);
-  router.resources('Crops', '/api/crops', controller.crop);
+  require('./router/crop')(app);
+  require('./router/FarmRel/biocide')(app);
+  require('./router/FarmRel/fertilizer')(app);
+  require('./router/FarmRel/safety')(app);
+  require('./router/FarmRel/weather')(app);
+  require('./router/common')(app);
+
   router.get('/test/add', controller.test.add);
   router.get('/test/remove', controller.test.remove);
 };

@@ -7,7 +7,7 @@ module.exports = app => {
   app.router.post('/ajax', app.controller.upload.ajax.upload);
 
   app.router.get('/form', app.controller.upload.form.show);
-  app.router.post('/form', app.controller.upload.form.upload);
+  app.router.post('/uploadimg', app.controller.upload.form.upload);
 
   app.router.get('/multiple-file', app.controller.upload.multiple.show);
   app.router.post('/multiple-file', app.controller.upload.multiple.upload);

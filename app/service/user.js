@@ -3,12 +3,31 @@
 const Service = require('egg').Service;
 const md5 = require('js-md5');
 const { ERROR, SUCCESS } = require('../util/util');
+function toInt(str) {
+  if (typeof str === 'number') return str;
+  if (!str) return str;
+  return parseInt(str, 10) || 0;
+}
 class UserService extends Service {
+  async index(limit, page) {
+    const { ctx } = this;
+    const query = {
+      limit: toInt(limit) || 8,
+      offset: toInt((page - 1) * limit) || 0,
+    };
+    const users = await ctx.model.User.findAndCountAll(query);
+    return Object.assign(SUCCESS, {
+      msg: '请求成功',
+      data: users,
+      page: toInt(page) || 1,
+      limit: toInt(limit) || 8,
+    });
+  }
+
   async create(user) {
     const { ctx } = this;
     try {
       if (!user.username || !user.password) {
-        ctx.status = 400;
         return Object.assign(ERROR, {
           msg: `expected an object with username, password but got: ${JSON.stringify(
             user
@@ -29,12 +48,12 @@ class UserService extends Service {
           user.authority_id === 1;
         }
         const res = await this.ctx.model.User.create(user);
-        ctx.status = 201;
+
         return Object.assign(SUCCESS, {
           data: res,
         });
       }
-      ctx.status = 406;
+
       return Object.assign(ERROR, {
         msg: 'username already exists',
       });
@@ -67,13 +86,23 @@ class UserService extends Service {
   async update({ id, user }) {
     const { ctx } = this;
     try {
-      const userDB = await ctx.model.User.findById(id);
+      const userDB = await ctx.model.User.findOne({
+        where: {
+          id,
+        },
+      });
       if (!userDB) {
         ctx.status = 400;
         return Object.assign(ERROR, {
-          msg: 'user not found',
+          msg: '未找到用户',
         });
       }
+      if (!user.username || !user.password) {
+        return Object.assign(ERROR, {
+          msg: '密码填写错误',
+        });
+      }
+
       const md5Passwd = md5(user.password);
       user = Object.assign(user, {
         password: md5Passwd,
@@ -82,6 +111,7 @@ class UserService extends Service {
       ctx.status = 200;
       return Object.assign(SUCCESS, {
         data: res,
+        msg: '编辑用户成功',
       });
     } catch (error) {
       ctx.throw(500);

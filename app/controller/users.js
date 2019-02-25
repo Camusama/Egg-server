@@ -8,11 +8,8 @@ function toInt(str) {
 class UserController extends Controller {
   async index() {
     const ctx = this.ctx;
-    const query = {
-      limit: toInt(ctx.query.limit),
-      offset: toInt((ctx.query.page - 1) * ctx.query.limit),
-    };
-    ctx.body = await ctx.model.User.findAll(query);
+    const { limit, page } = ctx.query;
+    ctx.body = await ctx.service.user.index(limit, page);
   }
   async create() {
     const { ctx } = this;

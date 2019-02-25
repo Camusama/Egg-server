@@ -31,6 +31,7 @@ module.exports = appInfo => {
 
   config.cors = {
     credentials: true,
+    allowMethods: 'GET,HEAD,PUT,POST,DELETE,PATCH',
   };
 
   config.alinode = {

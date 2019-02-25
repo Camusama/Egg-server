@@ -15,7 +15,7 @@
     e.preventDefault()
     var formData = new FormData()
     formData.append('image', $('#img')[0].files[0])
-
+    var _this = this
     $.ajax({
       url: '/addCrop',
       data: formData,
@@ -23,7 +23,8 @@
       contentType: false, // NEEDED, DON'T OMIT THIS (requires jQuery 1.6+)
       processData: false, // NEEDED, DON'T OMIT THIS
       success: function(result) {
-        imgurl = 'localhost:7001/' + result.data
+        _this.imgurl = 'localhost:7001/' + result.data
+        console.log(result)
       },
       error: function(responseStr) {
         alert('error', responseStr)
