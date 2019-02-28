@@ -26,7 +26,11 @@ module.exports = appInfo => {
     csrf: {
       enable: false,
     },
-    domainWhiteList: [ 'http://localhost:9528' ],
+    domainWhiteList: [
+      'http://localhost:9528',
+      'http://localhost:8080',
+      'http://localhost:8787',
+    ],
   };
 
   config.cors = {

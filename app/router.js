@@ -21,6 +21,15 @@ module.exports = app => {
   require('./router/CropRel/month')(app);
   require('./router/CropRel/pest')(app);
 
+  require('./router/front/biocide')(app);
+  require('./router/front/pest')(app);
+  require('./router/front/grow')(app);
+  require('./router/front/fertilizer')(app);
+  require('./router/front/safety')(app);
+  require('./router/front/weather')(app);
+  require('./router/front/month')(app);
+  require('./router/front/seed')(app);
+
   router.get('/test/add', controller.test.add);
   router.get('/test/remove', controller.test.remove);
 };
